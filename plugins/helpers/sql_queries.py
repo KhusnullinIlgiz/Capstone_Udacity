@@ -6,7 +6,7 @@ class SqlQueries:
     """)
 
     fact_movies_insert = (""" (movie_key, user_key, date_key, movie_staff_key, movie_crew_key, revenue, budget)
-        SELECT stage_movies.movie_key, stage_ratings.user_key, stage_ratings.timestamp, dim_movie_staff.movie_staff_key, dim_movie_crew.movie_crew_key,
+        SELECT stage_movies.movie_key, stage_ratings.userId, stage_ratings.timestamp, dim_movie_staff.movie_staff_key, dim_movie_crew.movie_crew_key,
         stage_movies.revenue, stage_movies.budget
         FROM stage_movies, stage_ratings, dim_movie_staff, dim_movie_crew
         WHERE (stage_movies.movie_key = stage_ratings.movieId AND stage_movies.movie_key = dim_movie_staff.movie_id AND stage_movies.movie_key = dim_movie_crew.movie_id)
@@ -15,8 +15,9 @@ class SqlQueries:
     """)
     
     dim_users_insert = (""" (user_key, movieId, rating)
-        SELECT stage_ratings.user_key, stage_ratings.movieId, stage_ratings.rating
-        FROM stage_ratings              
+        SELECT DISTINCT stage_ratings.userId, stage_ratings.movieId, stage_ratings.rating
+        FROM stage_ratings
+        WHERE (stage_ratings.userId IS NOT NULL AND stage_ratings.movieId IS NOT NULL AND stage_ratings.rating IS NOT NULL)
     """)
 
     dim_date_insert = (""" (date_key, hour, day, week, month, year, weekday)

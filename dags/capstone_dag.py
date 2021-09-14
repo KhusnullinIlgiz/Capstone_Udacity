@@ -150,7 +150,7 @@ run_quality_checks = DataQualityOperator(
     task_id='Run_data_quality_checks',
     dag=dag,
     redshift_conn_id='redshift',
-    tables_qry = [{"table":"stage_ratings","expected_result":"26024289"},{"table":"stage_movies","expected_result":"42105"},{"table":"dim_movie_staff","expected_result":"59555"},{"table":"dim_movie_crew","expected_result":"6230"},{"table":"dim_users","expected_result":"26024289"},{"table":"dim_date","expected_result":"26024289"},{"table":"dim_movies","expected_result":"42105"}, {"table":"fact_movies","expected_result":"292172"},{"table":"stage_movie_crew","expected_result":"6230"},{"table":"stage_movie_staff","expected_result":"59555"}]
+    tables_qry = [{"table":"stage_ratings","expected_result":"26024290"},{"table":"stage_movies","expected_result":"42105"},{"table":"dim_movie_staff","expected_result":"59555"},{"table":"dim_movie_crew","expected_result":"6230"},{"table":"dim_users","expected_result":"26024289"},{"table":"dim_date","expected_result":"581173"},{"table":"dim_movies","expected_result":"42105"}, {"table":"fact_movies","expected_result":"292172"},{"table":"stage_movie_crew","expected_result":"6230"},{"table":"stage_movie_staff","expected_result":"59555"}]
 )
 
 # Last task in pipeline for defining job's end
@@ -168,20 +168,15 @@ copy_stage_movies_to_redshift      >> load_dim_movies
 copy_stage_movie_staff_to_redshift >> load_dim_movie_staff
 copy_stage_movie_crew_to_redshift  >>  load_dim_movie_crew
 
-load_dim_movies    >> load_fact_movies
+load_dim_movies         >> load_fact_movies
+load_dim_users          >> load_fact_movies
+load_dim_date           >> load_fact_movies
+load_dim_movie_staff    >> load_fact_movies
+load_dim_movie_crew     >> load_fact_movies
 
 
+load_fact_movies     >> run_quality_checks
 
-copy_stage_ratings_to_redshift     >> run_quality_checks
-copy_stage_movies_to_redshift      >> run_quality_checks
-copy_stage_movie_staff_to_redshift >> run_quality_checks
-copy_stage_movie_crew_to_redshift  >> run_quality_checks
-load_dim_movies                    >> run_quality_checks
-load_fact_movies                   >> run_quality_checks
-load_dim_users                     >> run_quality_checks
-load_dim_date                      >> run_quality_checks
-load_dim_movie_staff               >> run_quality_checks
-load_dim_movie_crew                >> run_quality_checks
 
 run_quality_checks >> end_operator
 

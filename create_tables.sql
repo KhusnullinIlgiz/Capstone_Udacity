@@ -38,11 +38,10 @@ CREATE TABLE public.dim_movies (
 );
 
 CREATE TABLE public.stage_ratings (
-	user_key INT NOT NULL,
 	movieId INT,
-	rating FLOAT,
-    timestamp TIMESTAMP
-
+    rating FLOAT,
+    timestamp TIMESTAMP,
+	userId INT
 );
 
 CREATE TABLE public.dim_users (
